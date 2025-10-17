@@ -67,6 +67,11 @@ class GoniometerWindow(QtWidgets.QMainWindow):
         self.resize(int(window_size[0]), int(window_size[1]))
         self.setMinimumSize(int(minimum_size[0]), int(minimum_size[1]))
         
+        # Set application icon
+        icon_path = os.path.join(os.path.dirname(__file__), "icon.png")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QtGui.QIcon(icon_path))
+        
         # Apply stylesheet from configuration
         self.setStyleSheet(get_stylesheet())
 
