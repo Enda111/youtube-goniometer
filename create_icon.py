@@ -1,8 +1,15 @@
-import os
+"""
+Icon creation script for YouTube Goniometer.
+
+This script generates custom icons for the application, including Windows ICO format
+and various PNG sizes for different use cases.
+"""
+
+from typing import List, Union
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
-def create_goniometer_icon():
+def create_goniometer_icon() -> Image.Image:
     """Create a simple goniometer icon for the YouTube Goniometer app."""
     
     # Create a 256x256 image with transparent background
@@ -58,10 +65,11 @@ def create_goniometer_icon():
     draw.polygon(play_points, fill=play_color)
     
     # Add small "G" for Goniometer in corner
+    font: Union[ImageFont.FreeTypeFont, ImageFont.ImageFont]
     try:
         # Try to use a font, fallback to default if not available
         font = ImageFont.truetype("arial.ttf", 24)
-    except:
+    except (OSError, IOError):
         font = ImageFont.load_default()
     
     text_color = (200, 220, 240, 255)
@@ -69,7 +77,7 @@ def create_goniometer_icon():
     
     return img
 
-def create_icon_files():
+def create_icon_files() -> None:
     """Create icon files in multiple formats and sizes."""
     
     # Create the base icon
@@ -80,8 +88,8 @@ def create_icon_files():
     print("Created: icon.png (256x256)")
     
     # Create ICO file with multiple sizes
-    sizes = [16, 32, 48, 64, 128, 256]
-    ico_images = []
+    sizes: List[int] = [16, 32, 48, 64, 128, 256]
+    ico_images: List[Image.Image] = []
     
     for size in sizes:
         resized = icon_img.resize((size, size), Image.Resampling.LANCZOS)
@@ -109,5 +117,5 @@ if __name__ == "__main__":
         print("\nInstall Pillow (PIL) with:")
         print("pip install Pillow")
         
-    except Exception as e:
+    except (OSError, IOError, ValueError) as e:
         print(f"❌ Error creating icon: {e}")
