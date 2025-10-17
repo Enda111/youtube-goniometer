@@ -36,38 +36,96 @@ def create_goniometer_icon() -> Image.Image:
     start_x = center_x - g_width // 2
     start_y = center_y - g_height // 2
     
-    def draw_gonio_line(x1: int, y1: int, x2: int, y2: int, density: int = 8) -> None:
-        """Draw a line made of goniometer-style dots."""
-        distance = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
-        num_dots = max(2, int(distance / density))
-        
-        for i in range(num_dots):
-            t = i / (num_dots - 1) if num_dots > 1 else 0
-            x = int(x1 + t * (x2 - x1))
-            y = int(y1 + t * (y2 - y1))
+    def draw_curved_gonio_trace(points: List[tuple], density: int = 4, line_width: int = 3) -> None:
+        """Draw a curved goniometer trace made of many overlapping small lines."""
+        if len(points) < 2:
+            return
             
-            # Vary dot size and brightness slightly for organic look
-            dot_size = 2 + int(np.sin(i * 0.3) * 0.5)
-            color = gonio_green if i % 3 == 0 else gonio_green_dim
-            draw.ellipse([x - dot_size, y - dot_size, x + dot_size, y + dot_size], fill=color)
+        # Create smooth curve through points using interpolation
+        smooth_points = []
+        for i in range(len(points) - 1):
+            x1, y1 = points[i]
+            x2, y2 = points[i + 1]
+            
+            # Add intermediate points for smoothness
+            for t in np.linspace(0, 1, density):
+                # Add slight curve variation for organic goniometer look
+                curve_offset = np.sin(t * np.pi) * 3
+                x = int(x1 + t * (x2 - x1) + np.random.uniform(-curve_offset, curve_offset))
+                y = int(y1 + t * (y2 - y1) + np.random.uniform(-curve_offset, curve_offset))
+                smooth_points.append((x, y))
+        
+        # Draw overlapping short line segments
+        for i in range(len(smooth_points) - 1):
+            x1, y1 = smooth_points[i]
+            x2, y2 = smooth_points[i + 1]
+            
+            # Vary line properties for authentic goniometer look
+            intensity = 0.7 + 0.3 * np.sin(i * 0.2)
+            alpha = int(120 + 80 * intensity)
+            thickness = line_width + int(np.sin(i * 0.15) * 1.5)
+            
+            # Multiple overlapping lines for thickness and glow
+            for offset in range(-thickness//2, thickness//2 + 1):
+                for brightness in [0.6, 0.8, 1.0]:
+                    line_alpha = int(alpha * brightness)
+                    color = (0, 255, 0, line_alpha)
+                    
+                    # Draw slightly offset lines for thickness
+                    draw.line([x1 + offset, y1, x2 + offset, y2], fill=color, width=1)
+                    if offset != 0:  # Add perpendicular offset too
+                        draw.line([x1, y1 + offset, x2, y2 + offset], fill=color, width=1)
     
-    # Draw the "G" shape with goniometer-style dotted lines
+    # Create curved "G" shape with flowing goniometer traces
     
-    # Top horizontal line
-    draw_gonio_line(start_x, start_y, start_x + g_width - 20, start_y, 6)
+    # Top curve - more stylized arc
+    top_points = []
+    for t in np.linspace(0, 1, 12):
+        # Create curved top with gentle arc
+        x = start_x + t * (g_width - 30)
+        curve_height = 15 * np.sin(t * np.pi * 0.7)  # Gentle downward curve
+        y = start_y - curve_height
+        top_points.append((int(x), int(y)))
+    draw_curved_gonio_trace(top_points, density=6, line_width=4)
     
-    # Left vertical line (full height)
-    draw_gonio_line(start_x, start_y, start_x, start_y + g_height, 7)
+    # Left curve - flowing S-curve
+    left_points = []
+    for t in np.linspace(0, 1, 20):
+        # Create flowing left edge with S-curve
+        curve_offset = 12 * np.sin(t * np.pi * 1.5) * (1 - t * 0.3)
+        x = start_x + curve_offset
+        y = start_y + t * g_height
+        left_points.append((int(x), int(y)))
+    draw_curved_gonio_trace(left_points, density=5, line_width=5)
     
-    # Bottom horizontal line
-    draw_gonio_line(start_x, start_y + g_height, start_x + g_width - 20, start_y + g_height, 6)
+    # Bottom curve - elegant arc
+    bottom_points = []
+    for t in np.linspace(0, 1, 10):
+        x = start_x + 5 + t * (g_width - 35)
+        curve_height = 12 * np.sin(t * np.pi * 0.8)  # Gentle upward curve
+        y = start_y + g_height + curve_height
+        bottom_points.append((int(x), int(y)))
+    draw_curved_gonio_trace(bottom_points, density=6, line_width=4)
     
-    # Middle horizontal line (for the G)
-    mid_y = start_y + g_height // 2 + 10
-    draw_gonio_line(start_x + g_width // 2, mid_y, start_x + g_width - 20, mid_y, 5)
+    # Middle bar - curved with tapering
+    mid_y = start_y + g_height // 2 + 8
+    middle_points = []
+    for t in np.linspace(0, 1, 8):
+        curve_variation = 6 * np.sin(t * np.pi)
+        x = start_x + g_width // 2 + t * (g_width // 2 - 20)
+        y = mid_y + curve_variation * (0.5 - abs(t - 0.5))  # Curve up in middle
+        middle_points.append((int(x), int(y)))
+    draw_curved_gonio_trace(middle_points, density=5, line_width=4)
     
-    # Right vertical line (bottom half only)
-    draw_gonio_line(start_x + g_width - 20, mid_y, start_x + g_width - 20, start_y + g_height, 6)
+    # Right vertical - curved with slight bow
+    right_points = []
+    right_start_y = mid_y - 5
+    for t in np.linspace(0, 1, 12):
+        curve_bow = 8 * np.sin(t * np.pi) * 0.7  # Slight outward bow
+        x = start_x + g_width - 22 + curve_bow
+        y = right_start_y + t * (start_y + g_height - right_start_y + 5)
+        right_points.append((int(x), int(y)))
+    draw_curved_gonio_trace(right_points, density=5, line_width=4)
     
     # Add some extra goniometer-style scatter points around the G for authenticity
     for _ in range(25):
