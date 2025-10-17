@@ -1,0 +1,187 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "youtube-goniometer"
+version = "1.0.0"
+description = "Professional goniometer for YouTube audio analysis with real-time stereo field visualization"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Audio Visualizer Team", email = "contact@example.com"}
+]
+maintainers = [
+    {name = "Audio Visualizer Team", email = "contact@example.com"}
+]
+keywords = [
+    "audio", "goniometer", "stereo", "visualization", "youtube", 
+    "phase-correlation", "broadcast", "mastering", "music-production"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Multimedia :: Sound/Audio :: Capture/Recording",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: X11 Applications :: Qt",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.21.0",
+    "sounddevice>=0.4.4",
+    "soundfile>=0.10.0",
+    "PySide6>=6.2.0",
+    "pyqtgraph>=0.12.0",
+    "yt-dlp>=2023.1.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=22.0.0",
+    "pylint>=2.12.0",
+    "mypy>=0.910",
+    "pytest>=6.0.0",
+    "pytest-qt>=4.0.0",
+    "pytest-cov>=3.0.0",
+]
+docs = [
+    "sphinx>=4.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "sphinx-autodoc-typehints>=1.12.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/youtube-goniometer"
+Documentation = "https://github.com/yourusername/youtube-goniometer/blob/main/README.md"
+Repository = "https://github.com/yourusername/youtube-goniometer.git"
+"Bug Tracker" = "https://github.com/yourusername/youtube-goniometer/issues"
+
+[project.scripts]
+youtube-goniometer = "app:main"
+goniometer = "app:main"
+
+[project.gui-scripts]
+youtube-goniometer-gui = "app:main"
+
+# Development and testing tools configuration
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = ["visualizers"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.txt", "*.yaml", "*.yml"]
+
+# Code formatting with Black
+[tool.black]
+line-length = 120
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# Type checking with mypy
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+ignore_missing_imports = true
+
+# Linting with pylint
+[tool.pylint.messages_control]
+disable = [
+    "too-many-instance-attributes",
+    "too-many-local-variables", 
+    "too-many-branches",
+    "too-many-statements",
+    "too-many-arguments",
+    "too-many-public-methods",
+    "too-few-public-methods",
+    "fixme",
+    "invalid-name",
+]
+
+[tool.pylint.design]
+max-attributes = 15      # Audio visualizers need many components
+max-locals = 25         # Audio processing needs many variables
+max-branches = 20       # GUI event handling needs more branches  
+max-statements = 60     # Audio processing methods can be longer
+max-args = 8           # Visualizer constructors need more parameters
+max-public-methods = 25 # GUI classes need more public methods
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "Run", "_", "x", "y", "sr", "w", "f", "e", "ok", "tb", "L", "R"]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.similarities]
+min-similarity-lines = 10
+ignore-comments = true
+ignore-docstrings = true
+
+# Testing with pytest
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "gui: marks tests that require GUI components",
+]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "tests/*",
+    "setup.py",
+    "*/site-packages/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
