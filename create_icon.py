@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
 def create_goniometer_icon() -> Image.Image:
-    """Create a simple goniometer icon for the YouTube Goniometer app."""
+    """Create a goniometer-style 'G' icon made of dots and lines."""
     
     # Create a 256x256 image with transparent background
     size = 256
@@ -20,60 +20,85 @@ def create_goniometer_icon() -> Image.Image:
     # Dark background circle
     margin = 20
     circle_bbox = [margin, margin, size - margin, size - margin]
-    draw.ellipse(circle_bbox, fill=(30, 35, 45, 255), outline=(80, 90, 110, 255), width=4)
+    draw.ellipse(circle_bbox, fill=(20, 20, 30, 255), outline=(60, 60, 80, 255), width=3)
     
-    # Draw goniometer grid lines
-    center = size // 2
-    radius = (size - margin * 2) // 2 - 10
+    # Goniometer green color (same as the app)
+    gonio_green = (0, 255, 0, 200)
+    gonio_green_bright = (0, 255, 0, 255)
+    gonio_green_dim = (0, 200, 0, 150)
     
-    # Vertical and horizontal lines
-    line_color = (100, 120, 140, 200)
-    draw.line([center, margin + 10, center, size - margin - 10], fill=line_color, width=2)
-    draw.line([margin + 10, center, size - margin - 10, center], fill=line_color, width=2)
+    center_x, center_y = size // 2, size // 2
     
-    # Diagonal lines for mono/stereo indicators
-    diag_offset = int(radius * 0.7)
-    draw.line([center - diag_offset, center - diag_offset, center + diag_offset, center + diag_offset], 
-              fill=line_color, width=1)
-    draw.line([center - diag_offset, center + diag_offset, center + diag_offset, center - diag_offset], 
-              fill=line_color, width=1)
+    # Create a "G" shape using goniometer dots and lines
+    # G is roughly 120x140 pixels, centered
+    g_width = 120
+    g_height = 140
+    start_x = center_x - g_width // 2
+    start_y = center_y - g_height // 2
     
-    # Draw some sample goniometer pattern (L/R correlation)
-    pattern_color = (100, 200, 255, 255)  # Bright blue
+    def draw_gonio_line(x1: int, y1: int, x2: int, y2: int, density: int = 8) -> None:
+        """Draw a line made of goniometer-style dots."""
+        distance = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+        num_dots = max(2, int(distance / density))
+        
+        for i in range(num_dots):
+            t = i / (num_dots - 1) if num_dots > 1 else 0
+            x = int(x1 + t * (x2 - x1))
+            y = int(y1 + t * (y2 - y1))
+            
+            # Vary dot size and brightness slightly for organic look
+            dot_size = 2 + int(np.sin(i * 0.3) * 0.5)
+            color = gonio_green if i % 3 == 0 else gonio_green_dim
+            draw.ellipse([x - dot_size, y - dot_size, x + dot_size, y + dot_size], fill=color)
     
-    # Create a simple stereo pattern
-    for angle in range(0, 360, 5):
-        rad = np.radians(angle)
-        # Simulate stereo audio pattern
-        r = radius * 0.6 * (0.7 + 0.3 * np.sin(angle * 0.1))
-        x = int(center + r * np.cos(rad))
-        y = int(center + r * np.sin(rad))
-        draw.ellipse([x-2, y-2, x+2, y+2], fill=pattern_color)
+    # Draw the "G" shape with goniometer-style dotted lines
     
-    # Add YouTube play button symbol
-    play_size = 40
-    play_x = center - play_size // 3
-    play_y = center - play_size // 2
+    # Top horizontal line
+    draw_gonio_line(start_x, start_y, start_x + g_width - 20, start_y, 6)
     
-    # Triangle for play button
-    play_color = (255, 80, 80, 255)  # YouTube red
-    play_points = [
-        (play_x, play_y),
-        (play_x, play_y + play_size),
-        (play_x + int(play_size * 0.8), play_y + play_size // 2)
+    # Left vertical line (full height)
+    draw_gonio_line(start_x, start_y, start_x, start_y + g_height, 7)
+    
+    # Bottom horizontal line
+    draw_gonio_line(start_x, start_y + g_height, start_x + g_width - 20, start_y + g_height, 6)
+    
+    # Middle horizontal line (for the G)
+    mid_y = start_y + g_height // 2 + 10
+    draw_gonio_line(start_x + g_width // 2, mid_y, start_x + g_width - 20, mid_y, 5)
+    
+    # Right vertical line (bottom half only)
+    draw_gonio_line(start_x + g_width - 20, mid_y, start_x + g_width - 20, start_y + g_height, 6)
+    
+    # Add some extra goniometer-style scatter points around the G for authenticity
+    for _ in range(25):
+        # Random points near the G shape
+        angle = np.random.uniform(0, 2 * np.pi)
+        radius = np.random.uniform(g_width * 0.6, g_width * 0.8)
+        x = int(center_x + radius * np.cos(angle))
+        y = int(center_y + radius * np.sin(angle))
+        
+        # Only draw if reasonably close to the G shape
+        if (start_x - 20 <= x <= start_x + g_width + 20 and 
+            start_y - 20 <= y <= start_y + g_height + 20):
+            dot_size = np.random.randint(1, 3)
+            alpha = np.random.randint(80, 150)
+            color = (0, 255, 0, alpha)
+            draw.ellipse([x - dot_size, y - dot_size, x + dot_size, y + dot_size], fill=color)
+    
+    # Add subtle crosshairs in background (like goniometer display)
+    crosshair_color = (60, 80, 60, 100)
+    draw.line([center_x, margin + 15, center_x, size - margin - 15], fill=crosshair_color, width=1)
+    draw.line([margin + 15, center_y, size - margin - 15, center_y], fill=crosshair_color, width=1)
+    
+    # Add some bright accent dots at key points
+    key_points = [
+        (start_x, start_y),  # Top left
+        (start_x + g_width - 20, start_y + g_height),  # Bottom right
+        (start_x + g_width - 20, mid_y),  # Middle right
     ]
-    draw.polygon(play_points, fill=play_color)
     
-    # Add small "G" for Goniometer in corner
-    font: Union[ImageFont.FreeTypeFont, ImageFont.ImageFont]
-    try:
-        # Try to use a font, fallback to default if not available
-        font = ImageFont.truetype("arial.ttf", 24)
-    except (OSError, IOError):
-        font = ImageFont.load_default()
-    
-    text_color = (200, 220, 240, 255)
-    draw.text((size - 40, 10), "G", fill=text_color, font=font)
+    for x, y in key_points:
+        draw.ellipse([x - 3, y - 3, x + 3, y + 3], fill=gonio_green_bright)
     
     return img
 
