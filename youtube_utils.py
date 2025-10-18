@@ -139,7 +139,7 @@ class YouTubeDownloader:
         if ffmpeg_path is None:
             ffmpeg_path = str(FFMPEG_CONFIG["default_path"])
             
-        ffmpeg_exe = os.path.join(ffmpeg_path, "ffmpeg.exe")
+        ffmpeg_exe = os.path.join(ffmpeg_path, "ffmpeg.exe" if os.name == 'nt' else "ffmpeg")
         return os.path.isfile(ffmpeg_exe) and os.access(ffmpeg_exe, os.X_OK)
 
 

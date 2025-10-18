@@ -29,10 +29,25 @@ YOUTUBE_CONFIG: Dict[str, str] = {
 
 # FFmpeg Configuration
 def get_ffmpeg_path() -> str:
-    """Get the default FFmpeg installation path for Windows."""
-    username = os.environ.get('USERNAME', 'default')
-    return (f"C:\\Users\\{username}\\AppData\\Local\\Microsoft\\WinGet\\Packages\\"
-            f"Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.0-full_build\\bin")
+    """Get the default FFmpeg installation path for the current platform."""
+    import platform
+    import shutil
+    
+    # First try to find ffmpeg in PATH
+    ffmpeg_exe = shutil.which('ffmpeg')
+    if ffmpeg_exe:
+        return os.path.dirname(ffmpeg_exe)
+    
+    # Platform-specific fallback paths
+    system = platform.system()
+    if system == "Windows":
+        username = os.environ.get('USERNAME', 'default')
+        return (f"C:\\Users\\{username}\\AppData\\Local\\Microsoft\\WinGet\\Packages\\"
+                f"Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.0-full_build\\bin")
+    elif system == "Darwin":  # macOS
+        return "/opt/homebrew/bin"  # Homebrew default
+    else:  # Linux and others
+        return "/usr/bin"
 
 FFMPEG_CONFIG: Dict[str, Any] = {
     "default_path": get_ffmpeg_path(),
@@ -80,7 +95,7 @@ COLORS: Dict[str, Any] = {
 
 # UI Layout Configuration
 UI_CONFIG: Dict[str, Any] = {
-    "window_size": (1000, 600),
+    "window_size": (800, 800),  # Square window for equal L&R channel display
     "minimum_size": (800, 500),
     "font_sizes": {
         "title": "14pt",
@@ -99,7 +114,7 @@ UI_CONFIG: Dict[str, Any] = {
 
 # Goniometer Display Configuration
 GONIOMETER_CONFIG: Dict[str, Any] = {
-    "plot_range": (-1.2, 1.2),
+    "plot_range": (-1.0, 1.0),  # Eliminate dead space, use full normalized audio range
     "aspect_locked": True,
     "show_grid": True,
     "grid_alpha": 0.3,
@@ -152,8 +167,8 @@ APP_INFO: Dict[str, str] = {
     "name": "YouTube Goniometer",
     "version": "1.0.0",
     "description": "Professional goniometer for YouTube audio analysis",
-    "author": "Audio Visualizer Team",
-    "copyright": "© 2024 Audio Visualizer Team",
+    "author": "Enda111",
+    "copyright": "© 2024 Enda111",
 }
 
 def get_stylesheet() -> str:

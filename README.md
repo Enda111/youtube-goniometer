@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-A professional-grade goniometer for real-time stereo field analysis of YouTube audio content. This application provides broadcast-quality visualization tools used in professional audio production, mastering, and broadcast environments.
+A goniometer for analyzing stereo field characteristics of YouTube audio content. This application visualizes left and right channel correlation patterns commonly used for assessing stereo imaging and phase relationships.
 
 ## Overview
 
@@ -14,21 +14,21 @@ The YouTube Goniometer is a specialized audio analysis tool that visualizes the 
 
 ### Core Functionality
 - **YouTube Audio Analysis** - Direct audio streaming from YouTube URLs
-- **Professional Goniometer Display** - Broadcast-standard L/R correlation visualization
+- **Goniometer Display** - L/R correlation visualization
 - **Real-Time Phase Correlation** - Continuous monitoring with color-coded indicators
 - **Visual Trail Effects** - Shows recent audio history for pattern recognition
-- **Professional Reference Lines** - Industry-standard mono and phase detection guides
+- **Reference Lines** - Mono and phase detection guides
 
 ### User Interface
-- **Clean, Professional Design** - Inspired by broadcast audio equipment
-- **Keyboard Shortcuts** - Efficient operation for audio professionals
+- **Clean Design** - Audio equipment inspired interface
+- **Keyboard Shortcuts** - Efficient operation
 - **Real-Time Updates** - 30fps visualization for smooth analysis
 - **Video Title Display** - Shows actual YouTube video information
 - **Status Monitoring** - Real-time playback and analysis information
 
 ### Technical Features  
 - **High-Performance Rendering** - Optimized for real-time audio analysis
-- **Professional Color Coding** - Industry-standard phase correlation indicators
+- **Color Coding** - Phase correlation indicators
 - **Configurable Parameters** - Customizable display and analysis settings
 - **Error Handling** - Robust error reporting and recovery
 - **Modular Architecture** - Well-organized, maintainable codebase
@@ -44,7 +44,7 @@ The YouTube Goniometer is a specialized audio analysis tool that visualizes the 
 
 2. **FFmpeg** (Required for YouTube audio extraction)
    
-   **Windows (recommended):**
+   **Windows:**
    ```bash
    # Using winget (Windows 10/11)
    winget install Gyan.FFmpeg
@@ -75,7 +75,7 @@ The YouTube Goniometer is a specialized audio analysis tool that visualizes the 
 
 #### Option 1: Clone and Install (Recommended for Development)
 ```bash
-git clone https://github.com/yourusername/youtube-goniometer.git
+git clone https://github.com/Enda111/youtube-goniometer.git
 cd youtube-goniometer
 pip install -e .
 ```
@@ -87,7 +87,7 @@ pip install numpy sounddevice soundfile pyqtgraph PySide6 yt-dlp
 
 #### Option 3: Development Installation
 ```bash
-git clone https://github.com/yourusername/youtube-goniometer.git
+git clone https://github.com/Enda111/youtube-goniometer.git
 cd youtube-goniometer
 pip install -e ".[dev]"  # Includes development tools
 ```
@@ -155,7 +155,7 @@ The phase correlation coefficient is displayed in the top-left corner:
 - **Dashed Cross** - Center reference (L=0, R=0)
 - **Dotted Diagonals** - Mono detection lines
 
-## Professional Applications
+## Applications
 
 This goniometer provides analysis capabilities used in:
 
@@ -289,7 +289,7 @@ python app.py --verbose
 We welcome contributions! Please see our contributing guidelines:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/new-feature`)
 3. Make your changes
 4. Add tests for new functionality
 5. Ensure all tests pass (`pytest`)
@@ -298,7 +298,7 @@ We welcome contributions! Please see our contributing guidelines:
 
 ### Development Setup
 ```bash
-git clone https://github.com/yourusername/youtube-goniometer.git
+git clone https://github.com/Enda111/youtube-goniometer.git
 cd youtube-goniometer
 pip install -e ".[dev]"
 pre-commit install  # If using pre-commit hooks
@@ -313,16 +313,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **pyqtgraph** - High-performance plotting library
 - **yt-dlp** - YouTube download functionality  
 - **SoundDevice** - Real-time audio I/O
-- **PySide6** - Professional GUI framework
+- **PySide6** - GUI framework
 - **Audio engineering community** - For goniometer design principles
-
-## Support
-
-- 📧 **Email**: contact@example.com
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/youtube-goniometer/issues)
-- 📖 **Documentation**: [Project Wiki](https://github.com/yourusername/youtube-goniometer/wiki)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/youtube-goniometer/discussions)
-
----
-
-**Professional Audio Analysis Made Simple** 🎵📊
